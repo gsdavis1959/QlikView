@@ -1,0 +1,70 @@
+# selecting first 5 rows of the orderdetails datatable 
+SELECT * FROM OrderDetails
+Limit 5;
+
+# count of distinct values in a column 
+SELECT count(distinct ProductID)  
+FROM OrderDetails;
+
+# finding maximum quantity sold for a product 
+SELECT max(Quantity)
+FROM OrderDetails;
+
+# finding the total units sold across products 
+SELECT ProductID, sum(Quantity)
+FROM OrderDetails
+group by ProductID
+LIMIT 5;
+
+# filter using where clause on ProductID column
+SELECT ProductID, sum(Quantity)
+FROM OrderDetails
+where ProductID = 10;
+
+SELECT ProductID, sum(Quantity)
+FROM OrderDetails
+group by ProductID
+having sum(Quantity) > 350;
+
+# order by in descending order to get top quantity products.
+# order by sorts in ascending order by default.
+SELECT ProductID, sum(Quantity)
+FROM OrderDetails
+group by ProductID
+order by sum(Quantity) desc
+Limit 5;
+
+SELECT ProductID, Quantity
+FROM OrderDetails
+order by Quantity desc
+Limit 5;
+
+# joining order details and products data table on productid column
+# both the tables have productid as primary key 
+SELECT a.*,b.* 
+from OrderDetails as a 
+inner join 
+Products as b 
+on a.ProductID = b.ProductID
+
+# find rank within a category
+select * 
+from
+(select c.*,
+      ROW_NUMBER() OVER(partition BY c.CategoryID
+       ORDER BY c.tot_qty DESC) AS 'Row_Number' 
+from (SELECT  b.CategoryID, a.ProductID, sum(a.Quantity) as 'tot_qty'
+from OrderDetails as a
+inner join 
+Products as b
+on a.ProductID = b.ProductID
+group by b.CategoryID, a.ProductID)c )d
+where Row_Number <= 3
+
+# Using the LIKE operator for filtering 
+SELECT SupplierID,SupplierName FROM Suppliers
+where Phone LIKE '(171)%'
+
+
+
+
